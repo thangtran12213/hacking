@@ -29,6 +29,19 @@
         #update-vote {
             width: 200px;
         }
+        #container {
+            display: flex;
+            width: 600px;
+        }
+        .name {
+            flex:3;
+        }
+        .vote-count {
+            flex:1;
+        }
+        .name, .vote-count {
+            padding: 5px 10px;
+        }
     </style>
 </head>
 <body>
@@ -42,8 +55,55 @@
 
     <h3>Chạy tự động</h3>
     <button id="auto-upvote">Start</button>
+    <h3>Danh sách trường học và số lượng vote</h3>
+    <div id="container">
+        <div class="name"></div>
+        <div class="vote-count"></div>
+    </div>
     <script>
         window.addEventListener("load", () => {
+            function X() {
+
+                function createUI(name, count) {
+                    let container = document.getElementById("container").cloneNode(true);
+                    container.childNodes[1].innerText = name;
+                    container.childNodes[3].innerText = count;
+                    document.body.appendChild(container);
+                }
+                var myHeaders = new Headers();
+                    myHeaders.append("Accept", "application/json, text/plain, */*");
+                    myHeaders.append("Accept-Language", "en-US,en;q=0.9");
+                    myHeaders.append("Authorization", "");
+                    myHeaders.append("Cache-Control", "no-cache");
+                    myHeaders.append("Connection", "keep-alive");
+                    myHeaders.append("Origin", "http://lwldance.doanthanhnien.vn");
+                    myHeaders.append("Pragma", "no-cache");
+                    myHeaders.append("Referer", "http://lwldance.doanthanhnien.vn/");
+                    myHeaders.append("Sec-Fetch-Dest", "empty");
+                    myHeaders.append("Sec-Fetch-Mode", "cors");
+                    myHeaders.append("Sec-Fetch-Site", "cross-site");
+                    myHeaders.append("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
+                    myHeaders.append("sec-ch-ua", "\"Not_A Brand\";v=\"99\", \"Google Chrome\";v=\"109\", \"Chromium\";v=\"109\"");
+                    myHeaders.append("sec-ch-ua-mobile", "?0");
+                    myHeaders.append("sec-ch-ua-platform", "\"Windows\"");
+
+                    var requestOptions = {
+                    method: 'GET',
+                    headers: myHeaders,
+                    redirect: 'follow'
+                    };
+
+                    fetch("https://api.lofmalto.vn/flashmob-submissions?cityId=&flashmobRoundId=&flashmobSubmissionRoundStatus=accepted,voted,scheduled&participationTypeId=&isShowed=true&page=1&limit=2000&isUnder16=false", requestOptions)
+                    .then(response => response.json())
+                    .then(result => {
+                        result.data.flashmobSubmissions.forEach((item) => {
+                            createUI(item.flashmobTeamInformation.school.name, item.voteCount)
+                        })
+                        console.log();
+                    })
+                    .catch(error => console.log('error', error));
+            }
+            X();
             let checkKey;
 
        
